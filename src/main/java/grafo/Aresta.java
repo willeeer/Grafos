@@ -11,15 +11,19 @@ public class Aresta
 
    private boolean direcionado;
 
-   public Aresta(int id, Vertice verticeOrigem, Vertice verticeDestino, boolean direcionado)
+   private int peso;
+
+   public Aresta(int id, Vertice verticeOrigem, Vertice verticeDestino, boolean direcionado, int peso)
    {
       this.id = id;
       this.verticeOrigem = verticeOrigem;
       this.verticeDestino = verticeDestino;
       this.direcionado = direcionado;
+      this.peso = peso;
    }
 
-   @Override public String toString()
+   @Override
+   public String toString()
    {
       return "Aresta{" +
                "id=" + id +
@@ -31,8 +35,15 @@ public class Aresta
 
    public boolean isArestaValida(int v1, int v2)
    {
-      return ((verticeOrigem.getId() == v1 && verticeDestino.getId() == v2) || (verticeOrigem.getId() == v2
-               && verticeDestino.getId() == v1));
+      if (isDirecionado())
+      {
+         return ((verticeOrigem.getId() == v1 && verticeDestino.getId() == v2) || (verticeOrigem.getId() == v2
+                  && verticeDestino.getId() == v1));
+      }
+      else
+      {
+         return ((verticeOrigem.getId() == v1 && verticeDestino.getId() == v2));
+      }
    }
 
    public int getId()
@@ -73,5 +84,15 @@ public class Aresta
    public void setDirecionado(boolean direcionado)
    {
       this.direcionado = direcionado;
+   }
+
+   public int getPeso()
+   {
+      return peso;
+   }
+
+   public void setPeso(int peso)
+   {
+      this.peso = peso;
    }
 }

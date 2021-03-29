@@ -1,6 +1,7 @@
 package main.executor;
 
 import main.java.grafo.Aresta;
+import main.java.grafo.Grafo;
 import main.java.grafo.Vertice;
 
 import java.io.BufferedReader;
@@ -14,10 +15,12 @@ import java.util.List;
 public class ExecutorGrafo
 {
 
-   private static final String ARQUIVO_ARESTAS = "arestas.csv";
+   private static final String ARQUIVO_ARESTAS = "arestas_direcionado.csv";
    private static final String ARQUIVO_VERTICES = "vertices.csv";
 
    private static final String STRING_VAZIA = "";
+
+   private boolean IS_GRAFO_DIRECIONADO = false;
 
    public static void main(String[] args)
    {
@@ -28,41 +31,21 @@ public class ExecutorGrafo
       {
          System.out.println(vertice.toString());
       }
+
       System.out.println();
+
       for (Aresta aresta : listaAresta)
       {
          System.out.println(aresta.toString());
       }
+      System.out.println();
 
-      int[][] matrizAdjacencia = montaMatrizAdjacencia(listaVertice, listaAresta);
-      imprimeMatrizAdjacencia(matrizAdjacencia, matrizAdjacencia.length);
+      Grafo grafo = new Grafo(listaVertice.size(), listaAresta);
 
-   }
-
-   private static int[][] montaMatrizAdjacencia(List<Vertice> listaVertice, List<Aresta> listaAresta)
-   {
-
-      int tamanho = listaVertice.size();
-
-      int[][] matrizAdjacencia = new int[tamanho][tamanho];
-
-      for (int i = 0; i < tamanho; i++)
-      {
-         for (int j = 0; j < tamanho; j++)
-         {
-
-            if (buscaAresta(listaAresta, i+1, j+1) != null)
-            {
-               matrizAdjacencia[i][j] = 1;
-            }
-            else
-            {
-               matrizAdjacencia[i][j] = 0;
-            }
-         }
-      }
-      return matrizAdjacencia;
-
+      grafo.imprimeMatrizAdjacencia();
+      grafo.immprimirAresta(1, 3);
+      grafo.immprimirAresta(1, 6);
+      grafo.immprimirAresta(6, 1);
    }
 
    private static List montaArrayVertice(String nomeArquivo)
@@ -116,7 +99,7 @@ public class ExecutorGrafo
             Vertice v1 = buscaVertice(listaVertice, Integer.parseInt(dados[1]));
             Vertice v2 = buscaVertice(listaVertice, Integer.parseInt(dados[2]));
 
-            Aresta aresta = new Aresta(Integer.parseInt(dados[0]), v1, v2, Boolean.getBoolean(dados[3]));
+            Aresta aresta = new Aresta(Integer.parseInt(dados[0]), v1, v2, Boolean.getBoolean(dados[3]), 1);
             listaAresta.add(aresta);
 
          }
@@ -145,39 +128,6 @@ public class ExecutorGrafo
       }
 
       return null;
-   }
-
-   public static Aresta buscaAresta(List<Aresta> listaAresta, int idV1, int idV2)
-   {
-
-      for (Aresta aresta : listaAresta)
-      {
-         if (aresta.isArestaValida(idV1, idV2))
-         {
-            return aresta;
-         }
-      }
-
-      return null;
-   }
-
-   public static void imprimeMatrizAdjacencia(int[][] matrizAdjacencia, int tamanho)
-   {
-      System.out.print("----");
-      for (int i = 0; i < tamanho; i++)
-      {
-         System.out.print(String.format("   [%s]",i+1));
-      }
-      System.out.println(" ]");
-      for (int i = 0; i < tamanho; i++)
-      {
-         System.out.print(String.format("[%s] [",i+1));
-         for (int j = 0; j < tamanho; j++)
-         {
-            System.out.print(String.format("   %s  ",matrizAdjacencia[i][j]));
-         }
-         System.out.println("]");
-      }
    }
 
 }
