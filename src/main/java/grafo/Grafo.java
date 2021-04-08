@@ -1,5 +1,6 @@
 package main.java.grafo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Grafo
@@ -10,6 +11,9 @@ public class Grafo
    int qtdVertices;
    int qtdArestas;
 
+   private List<Vertice> vertices;
+   private List<Aresta> arestas;
+
    public Grafo(int qtdArestas, List<Aresta> listaAresta)
    {
       this.isDirecionado = listaAresta.get(0).isDirecionado();
@@ -18,14 +22,65 @@ public class Grafo
       this.matrizAdjacencia = montaMatrizAdjacencia(listaAresta);
    }
 
+   public Grafo()
+   {
+      this.vertices = new ArrayList<>();
+      this.arestas = new ArrayList<>();
+      this.qtdVertices = 0;
+      this.qtdArestas = 0;
+   }
+
+   public Vertice addVertice(Vertice v)
+   {
+      vertices.add(v);
+      return v;
+   }
+
+   public Aresta addAresta(int id, Vertice origem, Vertice destino)
+   {
+      Aresta e = new Aresta(id, origem, destino, isDirecionado, 1);
+
+      origem.adicionarAdjacente(destino);
+
+      if (!isDirecionado)
+      {
+         destino.adicionarAdjacente(origem);
+      }
+
+      arestas.add(e);
+
+      return e;
+   }
+
    public void immprimirAresta(int idV1, int idV2)
    {
-      Aresta v =  matrizAdjacencia[idV1-1][idV2-1];
-      if(v != null){
+      Aresta v = matrizAdjacencia[idV1 - 1][idV2 - 1];
+      if (v != null)
+      {
          System.out.println(v);
-      }else{
+      }
+      else
+      {
          System.out.println("Nao existe aresta para os vertices selecionados");
       }
+   }
+
+   @Override
+   public String toString()
+   {
+      StringBuilder listaAdjacencia = new StringBuilder();
+      for (Vertice v : vertices)
+      {
+         listaAdjacencia.append(String.format("%s[%s] -> ", v.getNome(), v.getId()));
+
+         for (Vertice verticeAdjacente : v.getListaDeAdjacencia())
+         {
+            listaAdjacencia.append(String.format("%s[%s] => ", verticeAdjacente.getNome(), verticeAdjacente.getId()));
+         }
+
+         listaAdjacencia.append("null \n");
+      }
+      return listaAdjacencia.toString();
    }
 
    public void imprimeMatrizAdjacencia()
@@ -62,7 +117,6 @@ public class Grafo
       return matrizAdjacencia;
 
    }
-
 
    public Aresta buscaAresta(List<Aresta> listaAresta, int idV1, int idV2)
    {
@@ -116,5 +170,25 @@ public class Grafo
    public void setQtdArestas(int qtdArestas)
    {
       this.qtdArestas = qtdArestas;
+   }
+
+   public List<Vertice> getVertices()
+   {
+      return vertices;
+   }
+
+   public void setVertices(List<Vertice> vertices)
+   {
+      this.vertices = vertices;
+   }
+
+   public List<Aresta> getArestas()
+   {
+      return arestas;
+   }
+
+   public void setArestas(List<Aresta> arestas)
+   {
+      this.arestas = arestas;
    }
 }

@@ -15,8 +15,11 @@ import java.util.List;
 public class ExecutorGrafo
 {
 
-   private static final String ARQUIVO_ARESTAS = "arestas_direcionado.csv";
+   private static final String ARQUIVO_ARESTAS = "arestas.csv";
    private static final String ARQUIVO_VERTICES = "vertices.csv";
+
+   private static final String ARQUIVO_ARESTAS_LAB = "arestas_labirinto.csv";
+   private static final String ARQUIVO_VERTICES_LAB = "vertices_labirinto.csv";
 
    private static final String STRING_VAZIA = "";
 
@@ -27,25 +30,35 @@ public class ExecutorGrafo
       List<Vertice> listaVertice = montaArrayVertice(ARQUIVO_VERTICES);
       List<Aresta> listaAresta = montaArrayAresta(ARQUIVO_ARESTAS, listaVertice);
 
-      for (Vertice vertice : listaVertice)
-      {
-         System.out.println(vertice.toString());
-      }
-
-      System.out.println();
-
-      for (Aresta aresta : listaAresta)
-      {
-         System.out.println(aresta.toString());
-      }
-      System.out.println();
-
       Grafo grafo = new Grafo(listaVertice.size(), listaAresta);
 
       grafo.imprimeMatrizAdjacencia();
-      grafo.immprimirAresta(1, 3);
-      grafo.immprimirAresta(1, 6);
-      grafo.immprimirAresta(6, 1);
+      System.out.println();
+
+      Grafo grafo2 = new Grafo();
+      grafo2.setDirecionado(false);
+
+      for (Vertice v : listaVertice)
+      {
+         grafo2.addVertice(v);
+      }
+
+      montaArrayArestaParaListaDeAdjacencia(ARQUIVO_ARESTAS, grafo2);
+      System.out.println(grafo2.toString());
+
+      System.out.println();
+      List<Vertice> verticesLabirinto = montaArrayVertice(ARQUIVO_VERTICES_LAB);
+
+      Grafo grafoLabirinto = new Grafo();
+      grafoLabirinto.setDirecionado(true);
+      for (Vertice v : verticesLabirinto)
+      {
+         grafoLabirinto.addVertice(v);
+      }
+
+      montaArrayArestaParaListaDeAdjacencia(ARQUIVO_ARESTAS_LAB, grafoLabirinto);
+      System.out.println(grafoLabirinto.toString());
+
    }
 
    private static List montaArrayVertice(String nomeArquivo)
@@ -78,6 +91,40 @@ public class ExecutorGrafo
       }
 
       return listaVertice;
+   }
+
+   private static void montaArrayArestaParaListaDeAdjacencia(String nomeArquivo, Grafo grafo)
+   {
+
+      String linhaArquivoCsv;
+
+      List<Vertice> vertices = grafo.getVertices();
+
+      try
+      {
+         BufferedReader reader = new BufferedReader(new FileReader(nomeArquivo));
+
+         reader.readLine();
+         while ((linhaArquivoCsv = reader.readLine()) != null)
+         {
+            String[] dados = linhaArquivoCsv.split(";");
+
+            Vertice origem = buscaVertice(vertices, Integer.parseInt(dados[1]));
+            Vertice destino = buscaVertice(vertices, Integer.parseInt(dados[2]));
+
+            grafo.addAresta(Integer.parseInt(dados[0]), origem, destino);
+
+         }
+      }
+      catch (FileNotFoundException e)
+      {
+         e.printStackTrace();
+      }
+      catch (IOException e)
+      {
+         e.printStackTrace();
+      }
+
    }
 
    private static List montaArrayAresta(String nomeArquivo, List<Vertice> listaVertice)
