@@ -58,6 +58,9 @@ public class ExecutorGrafo
 
       montaArrayArestaParaListaDeAdjacencia(ARQUIVO_ARESTAS_LAB, grafoLabirinto);
       System.out.println(grafoLabirinto.toString());
+      System.out.println();
+
+      grafoLabirinto.buscaEmLargura(grafoLabirinto.getVertices().get(0),grafoLabirinto.getVertices().get(9));
 
    }
 

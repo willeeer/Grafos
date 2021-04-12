@@ -1,6 +1,8 @@
 package main.java.grafo;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class Grafo
@@ -132,6 +134,85 @@ public class Grafo
       return null;
    }
 
+   public void buscaEmLargura(Vertice verticeInicial, Vertice verticeFinal)
+   {
+      List<Vertice> filaQ = new ArrayList<>();
+      HashMap<Vertice, Vertice> mapaNoPai = new HashMap<>();
+
+      for (Vertice v : vertices)
+      {
+         v.setCor("BRANCO");
+      }
+
+      filaQ.add(verticeInicial);
+
+      while (!filaQ.isEmpty())
+      {
+         imprimirFila(filaQ);
+
+         Vertice primeiroDaFila = filaQ.remove(0);
+
+         for (int i = primeiroDaFila.getListaDeAdjacencia().size(); i > 0; i--)
+         {
+            Vertice adjacente = primeiroDaFila.getListaDeAdjacencia().get(i - 1);
+            if (adjacente.getCor().compareTo("BRANCO") == 0)
+            {
+               adjacente.setCor("CINZA");
+               filaQ.add(adjacente);
+               mapaNoPai.put(adjacente, primeiroDaFila);
+            }
+         }
+         primeiroDaFila.setCor("PRETO");
+      }
+
+      System.out.println();
+
+      if (verticeFinal.getCor().compareTo("PRETO") == 0)
+      {
+         imprimirCaminho(verticeInicial, verticeFinal, mapaNoPai);
+      }
+      else
+      {
+         System.out.printf("Não existe caminho de [%s] ate [%s]", verticeInicial.getNome(), verticeFinal.getNome());
+      }
+
+   }
+
+   private void imprimirFila(List<Vertice> filaQ)
+   {
+      System.out.print("FILA: ");
+      for (Vertice v : filaQ)
+      {
+         System.out.print(v.getNome() + " ");
+      }
+      System.out.println();
+   }
+
+   private void imprimirCaminho(Vertice inicial, Vertice fim, HashMap<Vertice, Vertice> mapaNoPai)
+   {
+      List<Vertice> caminho = new ArrayList<>();
+
+      Vertice atual = fim;
+      while (atual.getNome().compareTo(inicial.getNome()) != 0)
+      {
+         caminho.add(atual);
+         atual = mapaNoPai.get(atual);
+      }
+      caminho.add(inicial);
+
+      Collections.reverse(caminho);
+
+      System.out.println("Caminho: ");
+      for (Vertice v : caminho)
+      {
+         System.out.print(v.getNome());
+         if (caminho.indexOf(v) != caminho.size() - 1)
+         {
+            System.out.print("-> ");
+         }
+      }
+   }
+
    public boolean isDirecionado()
    {
       return isDirecionado;
@@ -190,5 +271,12 @@ public class Grafo
    public void setArestas(List<Aresta> arestas)
    {
       this.arestas = arestas;
+   }
+
+   private class Fila
+   {
+
+      private Vertice[] filaVertice = new Vertice[getVertices().size()];
+
    }
 }
